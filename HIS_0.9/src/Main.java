@@ -1,7 +1,7 @@
 import ui.HomeFrame;
 import ui.Login;
 import util.JDBCUtil;
-//666
+
 public class Main {
 	public static void main(String[] args) {
 	//	new Login();
