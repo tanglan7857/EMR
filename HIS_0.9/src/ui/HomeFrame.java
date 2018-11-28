@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -24,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import clock.MyClock;
 import util.JDBCUtil;
@@ -52,6 +55,7 @@ public class HomeFrame extends JFrame {
 	JComboBox<String> condition_comboBox = new JComboBox<String>(condition);
 	public static JPanel tablePanel = new JPanel();
 	JButton medButton = new JButton("添加病历");
+	JTextPane textPane;
 	
 	public  HomeFrame() {
 		this.setSize(2000, 2000);
@@ -356,22 +360,61 @@ public class HomeFrame extends JFrame {
         JPanel primary = new JPanel();
         primary.setBackground(new Color(209, 224, 239)); //背景色
         primary.add(clock);
-        westPanel.add(primary, BorderLayout.NORTH);	
-        setPatientInfo() ;
+        westPanel.add(primary, BorderLayout.NORTH);
+        setPatientInfo_layout();
+
+        table.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+				int selectedRow = table.getSelectedRow();
+				String hspID = null;
+				if(selectedRow != -1) {
+					hspID= (String) table.getValueAt(selectedRow, 0);
+					String sql1 = "select * from PatientInfo  where hspID = '" + hspID + "'";
+					try {
+						Map<String, Object> map = JDBCUtil.findSimpleResult(sql1, null);
+						HomeFrame.this.setPatientInfo(map);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					} finally {
+
+					}
+				}
+        	}
+		});
 	}
 	
-	private void setPatientInfo() {
-		JTextPane j = new JTextPane();
+	private void setPatientInfo_layout() {
+		JPanel j = new JPanel();
 		j.setPreferredSize(new Dimension(0, 500));
-		j.setBackground(Color.red);
-		westPanel.add(j, BorderLayout.SOUTH);	
-		
-		j.setEditable(false);
-		j.setContentType("html/text");
-		j.setText("<h1>病人姓名</h1>"
-				+ ""
-				+ "");
+		westPanel.add(j, BorderLayout.SOUTH);
+		j.setLayout(new BorderLayout());
+		 
+		this.textPane = new JTextPane();
+        textPane.setEditable(false);
+        textPane.setContentType("text/html");
+        JScrollPane paneScrollPane = new JScrollPane(textPane);
+        j.add(paneScrollPane);
+        textPane.setBackground(new Color(209, 224, 239));
 	}
+	
+	private void setPatientInfo(Map<String, Object> map) {
+        // 设置内容
+        StringBuffer sb = new StringBuffer();
+        System.out.println(map);
+        
+        String s1 = "名字 : ";
+        String s11 = map.get("NAME").toString();
+		sb.append("<h1>" + s1  + s11 + "<hr>");
+		 
+		//<h1>dhfkahfkahf</h1><br><hr>
+		//---------------------		
+        String s2 = "性别 : ";
+        String s22 = map.get("GENDER").toString();
+    	sb.append("<h1>" + s2  + s22 + "<hr>");
+        
+        textPane.setText(sb.toString());
+  	}
 
 /**
  * 菜单栏button和图片说明	

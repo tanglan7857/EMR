@@ -255,12 +255,7 @@ public class PatientFrame extends JFrame{
 			medInsuranceType_comboBox.setPreferredSize(new Dimension(200,40));
 			medInsuranceType_comboBox.setBackground(Color.WHITE);
 		north1.add(getMyPanel("Ò½±£ºÅ  ",medInsuranceID));
-			medInsuranceID.setPreferredSize(new Dimension(300,40));
-		
-		
-		
-		
-		
+			medInsuranceID.setPreferredSize(new Dimension(300,40));	
 	}
 	
 	/**
