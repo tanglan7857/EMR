@@ -30,7 +30,7 @@ public class ExportMed extends JPanel{
 	public ExportMed(String title, Med med) {
 		this.med = med;
 		this.title = title;
-		this.setBackground(Color.pink);
+		this.setBackground(new Color(167,213,253));
 		this.setLayout(null);
 		setLayout_setcenter();
 		save.addActionListener(new ActionListener() {	

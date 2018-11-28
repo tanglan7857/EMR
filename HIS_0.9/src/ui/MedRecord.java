@@ -48,7 +48,7 @@ public class MedRecord extends JPanel {
 	public MedRecord(String hspID, Med med) { //基本页面显示
 		this.hspID = hspID;    
 		this.med = med;
-		this.setBackground(Color.cyan);
+		this.setBackground(new Color(207, 223, 238));
 		this.setLayout(null);
 		set_information();	
 		set_info();

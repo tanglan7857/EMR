@@ -41,7 +41,7 @@ public class ImportMed extends JPanel {
 
 	public void setAbstractPanel() {
 		this.setLayout(null);
-		this.setBackground(Color.orange);
+		this.setBackground(new Color(211,240,248));
 		JScrollPane js = new JScrollPane(treePanel);
 		js.getVerticalScrollBar().setUnitIncrement(20);		//更改滚轮速度
 		this.initTree();
