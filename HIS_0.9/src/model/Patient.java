@@ -1,6 +1,12 @@
 package model;
 
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Map;
+
 import javax.swing.JOptionPane;
+
+import util.JDBCUtil;
 
 public class Patient {
 	public String hspID;
@@ -35,13 +41,33 @@ public class Patient {
 	public String getHspID() {
 		return hspID;
 	}
-	public void setHspID(String hspID)throws Exception {
-		if(!hspID.equals("")) {
-		this.hspID = hspID;
-		}else {
+	public void setHspID(String hspID) {
+		String sql = "SELECT HspID from PatientInfo WHERE HspID=?";
+		Map<String, Object> map = null; 
+		try {
+			map = JDBCUtil.findSimpleResult(sql, Arrays.asList(hspID));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+//System.out.println(map);
+		if(hspID.equals("")) {
 			JOptionPane.showMessageDialog(null, "住院号不能为空！");
-			throw new Exception("住院号不能为空-");
-		}	
+			try {
+				throw new Exception("住院号不能为空-");
+			} catch (Exception e) {				
+				e.printStackTrace();
+			}			
+		}else if(map.size()!=0){	
+			JOptionPane.showMessageDialog(null, "住院号已存在！");
+			try {
+				throw new Exception("住院号重复");
+			} catch (Exception e) {
+			}
+			
+		}
+		else  {
+			this.hspID = hspID;
+		}
 	}
 	public String getName() {
 		return name;

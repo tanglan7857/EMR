@@ -84,7 +84,7 @@ public class MedRecord extends JPanel {
 		this.add(address);
 	}
 	
-	public void set_info() {
+	public void set_info() {          //≤°¿˙–≈œ¢
 		String sql = "select * from PatientInfo where HspID= ?";
 		List<Object> params = Arrays.asList(hspID);
 		

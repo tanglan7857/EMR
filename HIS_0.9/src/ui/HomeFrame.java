@@ -26,7 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.table.DefaultTableModel;
 
 import clock.MyClock;
 import util.JDBCUtil;
@@ -50,7 +50,7 @@ public class HomeFrame extends JFrame {
 	JTextField bed_textField = new JTextField();
 	JTextField hspID_textField = new JTextField();
 	JTextField name_textField = new JTextField();
-	static JTable table;
+	public static JTable table = new MyTable();
 	String[] condition = {"全部","出院","在院","归档"};
 	JComboBox<String> condition_comboBox = new JComboBox<String>(condition);
 	public static JPanel tablePanel = new JPanel();
@@ -61,7 +61,7 @@ public class HomeFrame extends JFrame {
 		this.setSize(2000, 2000);
 		this.setLocationRelativeTo(this.getOwner());//设置位置为屏幕中央
 		this.setResizable(true);
-		this.setTitle("Home");
+		this.setTitle("EMR电子病历系统");
 		this.getContentPane().setBackground(new Color(222, 241, 255)); 												
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -107,7 +107,8 @@ public class HomeFrame extends JFrame {
 				if(selectedRow != -1) {
 					hspID= (String) table.getValueAt(selectedRow, 0);
 					new Med(hspID);		
-				}			}
+				}			
+			}
 		});
 		
 		m2 = new MyButton(new ImageIcon("img/2.jpg"), new ImageIcon("img/2_2.jpg"),100, 80);
@@ -210,6 +211,37 @@ public class HomeFrame extends JFrame {
 		JPanel j45 =getMyPanel(m45, " 病人转科");
 		j45.setBounds(1300, 10, 120, 100);
 		northPanel.add(j45);
+		m45.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+
+				int selectedRow = table.getSelectedRow();
+				String hspID = null;
+				if(selectedRow != -1) {
+					hspID= (String) table.getValueAt(selectedRow, 0);
+					Object[] list  = {"外科","皮肤科","急诊","眼科","脑科","儿科","内科","妇产科"};
+					String selectedValue =
+							(String) JOptionPane.showInputDialog(null,"输入", "病人转科",
+							JOptionPane.INFORMATION_MESSAGE, null,
+							list, list[0]);
+					String sql = "update PatientInfo set DepartName='" + selectedValue + "' where hspID = '"+hspID+"'";
+					try {
+						JDBCUtil.updateByPreparedStatement(sql, null);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					} finally {
+						setContent_north();
+						String sql1 = "select * from PatientInfo  where hspID = '" + hspID + "'";
+						try {
+							Map<String, Object> map = JDBCUtil.findSimpleResult(sql1, null);
+							HomeFrame.this.setPatientInfo(map);
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						} 
+					}
+				}	
+			}
+		});
 		
 		m5 = new MyButton(new ImageIcon("img/5.jpg"), new ImageIcon("img/5_2.jpg"),100, 80);
 		JPanel j5 =getMyPanel(m5, "   退出");
@@ -312,7 +344,7 @@ public class HomeFrame extends JFrame {
 		}   
 		loadMsg_table(lists);
 	}
-	
+	//加载表的数据
 	public static void loadMsg_table(List<Map<String, Object>> lists) {
 		int colSize ;
 		if(lists.size() == 0) colSize = 0;
@@ -331,7 +363,8 @@ public class HomeFrame extends JFrame {
 				obj[i][j] = map.get(s);
 			}		
 		} 
-		table = new MyTable(obj, colNames);  
+		//table = new MyTable(obj, colNames);  
+		table.setModel(new DefaultTableModel(obj, colNames));
 		JScrollPane scroll = new JScrollPane(table); 
 		tablePanel.removeAll();
 		tablePanel.add(scroll);  
@@ -361,8 +394,8 @@ public class HomeFrame extends JFrame {
         primary.setBackground(new Color(209, 224, 239)); //背景色
         primary.add(clock);
         westPanel.add(primary, BorderLayout.NORTH);
-        setPatientInfo_layout();
-
+        setPatientInfo_layout();     //先调用布局
+                                    //再填充内容
         table.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
@@ -377,7 +410,7 @@ public class HomeFrame extends JFrame {
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					} finally {
-
+System.out.println(System.currentTimeMillis());
 					}
 				}
         	}
@@ -401,7 +434,10 @@ public class HomeFrame extends JFrame {
 	private void setPatientInfo(Map<String, Object> map) {
         // 设置内容
         StringBuffer sb = new StringBuffer();
-        System.out.println(map);
+        
+        String s0 = "住院号 : ";
+        String s00 = map.get("HSPID").toString();
+		sb.append("<h1>" + s0  + s00 + "<hr>");
         
         String s1 = "名字 : ";
         String s11 = map.get("NAME").toString();
@@ -412,16 +448,23 @@ public class HomeFrame extends JFrame {
         String s2 = "性别 : ";
         String s22 = map.get("GENDER").toString();
     	sb.append("<h1>" + s2  + s22 + "<hr>");
-        
+    	
+    	 String s3 = "所属科室 : ";
+         String s33 = map.get("DEPARTNAME").toString();
+     	 sb.append("<h1>" + s3  + s33 + "<hr>");
+     	
+     	String s4 = "床号 : ";
+        String s44 = map.get("BEDID").toString();
+    	sb.append("<h1>" + s4  + s44 + "<hr>");        
         textPane.setText(sb.toString());
   	}
 
-/**
- * 菜单栏button和图片说明	
- * @param j
- * @param s
- * @return
- */
+	/**
+	 * 菜单栏button和图片说明	
+	 * @param j
+	 * @param s
+	 * @return
+	 */
 	private JPanel getMyPanel(JButton j, String s) {
 		JPanel jpanel = new JPanel();
 		jpanel.setLayout(new BorderLayout());

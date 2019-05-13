@@ -356,7 +356,6 @@ public class PatientFrame extends JFrame{
 		try {
 			this.setParams(p);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return;
 		}
 		

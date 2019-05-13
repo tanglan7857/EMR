@@ -4,9 +4,9 @@ import util.JDBCUtil;
 
 public class Main {
 	public static void main(String[] args) {
-	//	new Login();
+		new Login();
 		JDBCUtil.connect();
-		new HomeFrame().setVisible(true);
+	//	new HomeFrame().setVisible(true);
 	//	new MedRecord("11111");
 	//	new ExportMed("导出模板哈哈哈哈哈哈");
 	//	new ImportMed("导入模板");

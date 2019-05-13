@@ -11,16 +11,31 @@ public class MyClock extends ClockFace implements ActionListener {
     private int secondLength, minuteLength, hourLength, cXM, cYM, cXS, cYS, cXH, cYH, temp;
     private double diS, angleFrom12S, angleFrom3S, angleFrom12M, angleFrom3M, angleFrom12H, angleFrom3H;
     private double dIM, dIH;
+    Calendar calendar;
 
-    public MyClock(int x, int y, int width)
-    {
+    public MyClock(int x, int y, int width) {
         super(x, y, width);
         this.x = x;
         this.y = y;
         this.width = width;
         this.radius = width / 2;
         temp = 0;
-        Calendar calendar = GregorianCalendar.getInstance();
+
+        secondHand = new ClockHand(radius, radius, radius, 250, 4, Color.RED);
+        minuteHand = new ClockHand(radius, radius, radius, 50,  6, Color.BLACK);
+        hourHand = new ClockHand(radius, radius, radius, 40, 9, Color.BLACK);
+
+        setTime();
+        
+        Timer time = new Timer(1000, this);
+        time.start();
+
+        setOpaque(false);
+        setPreferredSize(new Dimension(width, width));
+    }
+    
+    public void setTime() {
+        calendar = GregorianCalendar.getInstance();
         int hour = calendar.get(Calendar.HOUR);
         int minute = calendar.get(Calendar.MINUTE);
         int second = calendar.get(Calendar.SECOND);
@@ -43,21 +58,11 @@ public class MyClock extends ClockFace implements ActionListener {
             default: hour = 0; break;
         }
         hourCounter = hour;
-
-        secondHand = new ClockHand(radius, radius, radius, 250, 4, Color.RED);
-        minuteHand = new ClockHand(radius, radius, radius, 50,  6, Color.BLACK);
-        hourHand = new ClockHand(radius, radius, radius, 40, 9, Color.BLACK);
-
-
-        Timer time = new Timer(1000, this);
-        time.start();
-
-        setOpaque(false);
-        setPreferredSize(new Dimension(width, width));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	setTime();
         repaint();
     }
 
@@ -74,6 +79,7 @@ public class MyClock extends ClockFace implements ActionListener {
         {
             minuteCounter--;
             positionMinute();
+            setTime();
             minuteHand.draw(g2);
 
             positionHour();
@@ -83,11 +89,13 @@ public class MyClock extends ClockFace implements ActionListener {
         if(secondCounter <= 59)
         {
             positionSecond();
+            setTime();
             secondHand.draw(g2);
         }
         if(secondCounter == 59)
         {
             positionMinute();
+            setTime();
             minuteHand.draw(g2);
 
             secondCounter = -1;
@@ -104,6 +112,7 @@ public class MyClock extends ClockFace implements ActionListener {
                 hourCounter = hourCounter + 5;
             }
             positionHour();
+            setTime();
             hourHand.draw(g2);
             minuteCounter = 0;
         }
@@ -114,6 +123,7 @@ public class MyClock extends ClockFace implements ActionListener {
         }
 
         secondCounter++;
+        setTime();
         minuteHand.draw(g2);
         hourHand.draw(g2);
     }

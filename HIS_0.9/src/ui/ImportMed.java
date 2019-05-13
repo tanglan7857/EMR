@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,7 +28,7 @@ import util.JDBCUtil;
 public class ImportMed extends JPanel {
 	JPanel treePanel = new JPanel();
 	JTree tree = null;
-	JButton importButton =  new JButton("导出");
+	JButton importButton =  new JButton("导入");
 	JButton returned = new JButton("返回");
 	
 	Med med = null;
@@ -41,7 +42,7 @@ public class ImportMed extends JPanel {
 
 	public void setAbstractPanel() {
 		this.setLayout(null);
-		this.setBackground(new Color(211,240,248));
+		this.setBackground(new Color(117, 218, 231));
 		JScrollPane js = new JScrollPane(treePanel);
 		js.getVerticalScrollBar().setUnitIncrement(20);		//更改滚轮速度
 		this.initTree();
@@ -66,8 +67,11 @@ public class ImportMed extends JPanel {
 	private void initTree() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("病历模板");
 		this.getNode(root);
+		
 		tree = new JTree(root);			
 		treePanel.add(tree);
+		tree.setFont(new Font("宋体", Font.BOLD, 30));
+		//tree.setForeground(Color.red);
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -114,7 +118,7 @@ public class ImportMed extends JPanel {
 			for(Map<String,Object> map : result) {
 				String s = map.get("TemplateID".toUpperCase()).toString();
 				String[] array = s.split("#");
-System.out.println(Arrays.toString(array));
+//System.out.println(Arrays.toString(array));
 				if(maps.containsKey((array[0]))) {
 					maps.get(array[0]).add(array[1]);
 				} else {

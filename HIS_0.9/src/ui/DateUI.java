@@ -31,7 +31,8 @@ public class DateUI extends MouseAdapter {
         for (int i = 1900; i < 2100; i++) {  
             yearBox.addItem(i + "年");  
         }  
-        yearBox.setSelectedItem("2009年");  
+        yearBox.setSelectedItem("2009年"); 
+        yearBox.setPreferredSize(new Dimension(200, 50));
         for (int i = 1; i <= 12; i++) {  
             monthBox.addItem(i + "月");  
         }  
@@ -84,7 +85,7 @@ public class DateUI extends MouseAdapter {
         });  
         jp.add(northPanel, BorderLayout.NORTH);  
         jp.add(centerPanel, BorderLayout.CENTER);  
-        jf.setSize(370,220);  
+        jf.setSize(500,500);  
         jf.setVisible(true);  
     }  
   
